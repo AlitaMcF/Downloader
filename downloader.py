@@ -19,18 +19,27 @@ class Downloader:
         the main function of Downloader.
         :return:
         """
+        threads = []
+        infos = []
         for url in self.url_list:
             protocol = url.split(':')[0]
             if protocol.lower() in ['http', 'https']:
-                self._http_download(url)
+                info = self._http_download(url, threads)
+                infos.append(info)
+        # wait until all threads finished.
+        for t in threads:
+            t.join()
+        # close all process bars and check files integrity.
+        for info in infos:
+            self._check_integrity(info[0], info[1], info[2])
+            info[3].close()
 
-    def _http_download(self, url):
+    def _http_download(self, url, threads):
         """
         handle http(s) downloading.
         :param url:
         :return:
         """
-        threads = []
         try:
             file_name = url.split('/')[-1]
             config_file_name = file_name + '_config.json'
@@ -46,8 +55,7 @@ class Downloader:
             self._check_file(file_name, content_length)
             self._thread_run_http(thread_num, url, part_size, content_length, file_name, config_file_name, process_bar,
                                   threads)
-            self._check_integrity(md5, file_name, config_file_name)
-            process_bar.close()
+            return [md5, file_name, config_file_name, process_bar]
         except Exception as e:
             print(e)
             sys.exit(0)
@@ -75,9 +83,6 @@ class Downloader:
             thread.setDaemon(True)
             threads.append(thread)
             thread.start()
-        # wait until all threads finished.
-        for t in threads:
-            t.join()
 
     def _check_file(self, file_name, content_length):
         """
