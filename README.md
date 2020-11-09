@@ -6,3 +6,4 @@ Support http(s), ftp and p2p protocols.
 * httpdlr.py: http(s) protocol downloading class.
 
 Downloading demo.
+![http demo](https://github.com/AlitaMcF/Downloader/blob/master/image/downloader_http_demo.png)
