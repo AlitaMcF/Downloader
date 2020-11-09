@@ -164,12 +164,12 @@ class Downloader:
         """
         with requests.get(url, stream=True) as req:
             content_length = int(req.headers['Content-Length'])
-            ETag = req.headers['ETag']
+            etag = req.headers['ETag']
             try:
                 md5 = req.headers['Content-MD5']
             except KeyError as e:
                 md5 = ''
-        return [content_length, ETag, md5]
+        return [content_length, etag, md5]
 
     def _delete_file(self, file_name, config_file_name):
         """

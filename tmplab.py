@@ -266,17 +266,45 @@ import _thread
 # for i in infos:
 #     print(i[0], i[1], i[2])
 
-def display_pbar(x):
-    with tqdm(total=1000*x) as pbar:
-        for i in range(1000):
-            sleep(0.1)
+# def display_pbar(x):
+#     with tqdm(total=1000*x) as pbar:
+#         for i in range(1000):
+#             sleep(0.1)
+#             pbar.update(1)
+#
+#
+# _thread.start_new_thread(display_pbar, (1,))
+# _thread.start_new_thread(display_pbar, (10,))
+#
+#
+# with tqdm(total=100) as pbar:
+#     for i in range(10):
+#         pbar.update(10)
+
+
+from time import sleep
+import random
+from tqdm import tqdm
+from multiprocessing import Pool, freeze_support, RLock
+
+L = list(range(5)) # works until 23, breaks starting at 24
+
+def progresser(n):
+    text = f'#{n}'
+
+    sampling_counts = 10
+    with tqdm(total=sampling_counts, desc=text, position=n+1) as pbar:
+        for i in range(sampling_counts):
+            sleep(random.uniform(0, 1))
             pbar.update(1)
 
+if __name__ == '__main__':
+    freeze_support()
 
-_thread.start_new_thread(display_pbar, (1,))
-_thread.start_new_thread(display_pbar, (10,))
+    p = Pool(processes=None,
+                initargs=(RLock(),), initializer=tqdm.set_lock
+                )
+    p.map(progresser, L)
+    print('\n' * (len(L) + 1))
 
 
-with tqdm(total=100) as pbar:
-    for i in range(10):
-        pbar.update(10)
