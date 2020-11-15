@@ -84,9 +84,9 @@ class BilibiliCrawler (threading.Thread):
         self._delete_config_file(config_file_location)
 
     def _combine_video(self, last_file_location):
-        if len(self.segment_list) == 1:
-            os.rename(last_file_location, os.path.join(self.current_video_path, self.title+'.flv'))
-            return
+        # if len(self.segment_list) == 1:
+        #     os.rename(last_file_location, os.path.join(self.current_video_path, self.title+'.flv'))
+        #     return
 
         def file_filter(f):
             if f.endswith('.flv'):
@@ -111,7 +111,7 @@ class BilibiliCrawler (threading.Thread):
         final_clip = concatenate_videoclips(video_list)
         # generate the final video and write to file system
         final_clip.write_videofile(os.path.join(self.current_video_path, r'{}.mp4'.format(self.title)), fps=30,
-                                   remove_temp=True)
+                                   remove_temp=True, logger='bar')
         self._delete_flv_files(files)
 
     def get_segments_info(self):
