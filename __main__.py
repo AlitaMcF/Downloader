@@ -12,8 +12,9 @@ if __name__ == '__main__':
     #     # ]
     print('Downloader. Supports HTTP, FTP protocols and Bilibili crawler.')
     print('Input your url or list, split by SPACE:')
+    print('----------------------------------------------------------')
     raw_url_list = input()
+    print('----------------------------------------------------------')
     url_list = raw_url_list.split(' ')
-    print(url_list)
     downloader = Downloader(url_list)
     downloader.launch()
