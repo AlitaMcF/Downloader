@@ -1,7 +1,7 @@
 # Downloader
 Support http(s), ftp, ~~p2p~~ protocols and bilibili crawler.
 
-### Http protocol downloading demo.
+### Demo
 
 ![http demo](https://github.com/AlitaMcF/Downloader/blob/master/image/downloader_demo.png)
 
