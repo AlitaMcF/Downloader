@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print('Input your url or list, split by SPACE:')
     print('———————————————————————— input your url(list) below ————————————————————————')
     raw_url_list = input()
-    print('————————————————————————————————  ——————————————————————————————————————————')
+    print('————————————————————————————————————————————————————————————————————————————')
     url_list = raw_url_list.split(' ')
     downloader = Downloader(url_list)
     downloader.launch()
