@@ -8,6 +8,7 @@ from httpdlr import HttpDlr
 from tqdm import tqdm
 import re
 from bilibilidlr import BilibiliCrawler
+from urllib.parse import unquote
 
 
 class Downloader:
@@ -54,13 +55,13 @@ class Downloader:
         :return:
         """
         try:
-            file_name = url.split('/')[-1]
+            file_name = unquote(url.split('/')[-1])
             config_file_name = file_name + '_config.json'
             # self._delete_file(file_name, config_file_name)
             [content_length, etag, md5] = self._get_download_file_info_http(url)
             # process bar
-            process_bar = tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc=file_name.ljust(35, '-'),
-                               total=content_length)
+            process_bar = tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1,
+                               desc=file_name.ljust(35-self.len_zh(file_name), '·'), total=content_length)
             thread_num = self._count_thread_num(content_length)
             # the size of each partition
             part_size = content_length // thread_num
@@ -134,6 +135,7 @@ class Downloader:
         for item in cid_list:
             cid = str(item['cid'])
             title = item['part']
+            title = unquote(title)
             if not title:
                 title = video_title
             title = re.sub(r'[\/\\:*?"<>|]', '', title)  # replace all these signs to none.
@@ -142,8 +144,8 @@ class Downloader:
 
             bilibili_crawler = BilibiliCrawler(orig_url=orig_url, cid=cid, quality=quality, title=title)
             [sizes, _] = bilibili_crawler.get_segments_info()
-            process_bar = tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc=title.ljust(35, '-'),
-                               total=sum(sizes))
+            process_bar = tqdm(unit='B', unit_scale=True, unit_divisor=1024, miniters=1,
+                               desc=title.ljust(35-self.len_zh(title), '·'), total=sum(sizes))
             bilibili_crawler.set_process_bar(process_bar)
             bilibili_crawler.setDaemon(True)
             threads.append(bilibili_crawler)
@@ -302,3 +304,14 @@ class Downloader:
                         return
                 if os.path.exists(self.path+config_file_name):
                     os.remove(self.path+config_file_name)
+
+    def len_zh(self, data):
+        """
+        find the num of Chinese character in str
+        :return:
+        """
+        temp = re.findall('[^A-Za-z0-9\s\-.]+', data)
+        count = 0
+        for i in temp:
+            count += len(i)
+        return (count)
