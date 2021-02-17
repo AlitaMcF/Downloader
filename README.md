@@ -1,5 +1,5 @@
 # Downloader
-Support http(s), ftp, ~~p2p~~ protocols and bilibili crawler.
+Support http(s) and bilibili crawler.
 
 ### Demo
 
